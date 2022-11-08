@@ -124,15 +124,21 @@ def get_data(url, change_city_name='Москва'):
                         value=item_text,
                     ).get_attribute('href').strip()
 
-                    item_available = item.find_element(
-                        by=By.CLASS_NAME,
-                        value='order-avail-wrap__link',
-                    ).get_attribute('data-mobile-text').strip()
+                    try:
+                        # Checking the availability of product
+                        item_available = item.find_element(
+                            by=By.CLASS_NAME,
+                            value='order-avail-wrap__link',
+                        ).get_attribute('data-mobile-text').strip()
 
-                    item_price = item.find_element(
-                        by=By.CLASS_NAME,
-                        value='product-buy__price',
-                    ).text.strip().split('\n')
+                        item_price = item.find_element(
+                            by=By.CLASS_NAME,
+                            value='product-buy__price',
+                        ).text.strip().split('\n')
+
+                    except NoSuchElementException:
+                        item_available = 'The product is out of stock'
+                        item_price = (item_available, )
 
                     data_results.append(
                         {
@@ -167,7 +173,7 @@ def get_data(url, change_city_name='Москва'):
 
 
 def main():
-    url = 'https://www.dns-shop.ru/catalog/17a89aab16404e77/videokarty/?f[mv]=1dn4f0-13n3m1-145iin-v7hg2'
+    url = 'https://www.dns-shop.ru/catalog/17a89aab16404e77/videokarty/?stock=now-today-tomorrow-later-out_of_stock&brand=afox-kfa2&f[mv]=1dn4f0-udtje-13n3m1-udtf8-145iin-uiykt'
     get_data(url=url)
 
 
